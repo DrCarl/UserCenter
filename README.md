@@ -1,2 +1,2 @@
 # UserCenter
-A User Centre implemented by Node
+A User Center implemented by NodeJS
