@@ -16,5 +16,23 @@ module.exports = {
     			userDao.insert(dto, cb);
     		}
     	});
+    },
+    login: function(dto, cb){
+        userDao.select({login_name: dto.login_name}, function(err, result){
+            if(err){
+                cb(err);
+            }else{
+                if(result && result.length > 0){
+                    user = result[0];
+                    if(user.password == dto.password){
+                        cb(err, user);
+                    }else{
+                        cb(new Error("密码错误"));
+                    }
+                }else{
+                    cb(new Error("用户不存在"));
+                }
+            }
+        });
     }
 };
