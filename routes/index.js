@@ -2,6 +2,12 @@ var router = require('express').Router();
 var user = require('../src/action/UserAction');
 var userService = require("../src/service/Userservice");
 
+var app = require("express")();
+
+
+/* modules */
+router.use('/users', user);
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
     res.render('index', {
@@ -9,19 +15,21 @@ router.get('/', function(req, res, next) {
     });
 });
 
+/* GET login page. */
 router.get('/login', function(req, res) {
     res.render('login',{
     	title: "Sign In"
     });
 });
 
+/* GET register page. */
 router.get('/join', function(req, res) {
     res.render('register',{
     	title: "Sign Up"
     });
 });
 
-
+/* POST to login */
 router.post('/session', function(req, res, next) {
 	var  dto = {
 		login_name: req.body.login_name,
@@ -31,15 +39,15 @@ router.post('/session', function(req, res, next) {
     	if(err){
     		next(err);
     	}else{
-    		//res.cookie["userid"] = result.id;
-    		res.cookie('userid', 1234, {maxAge:600000, httpOnly:true, path:'/', secure:true});
-    		res.setHeader("Set-Cookie",["type=ninja","language=javascript", "aaa=ccc"]);
+    		res.cookie["userid"] = result.id;
+    		res.cookie('user_id', 1234, {maxAge:600000, httpOnly:true, path:'/', secure:true});
+    		res.setHeader("Set-Cookie",["id=" + result.id]);
     		res.redirect("/");
     	}
     });
 });
 
-
+/* POST to register */
 router.post('/join', function(req, res, next) {
 	var dto ={
 		login_name : req.body.login_name,
@@ -54,7 +62,5 @@ router.post('/join', function(req, res, next) {
 	})
 });
 
-/* modules */
-router.use('/users', user);
 
 module.exports = router;

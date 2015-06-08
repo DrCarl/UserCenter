@@ -1,3 +1,5 @@
+// Start file
+// load modules
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -6,19 +8,22 @@ var morgan = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+// load routes
 var routes = require('./routes/index');
 
+// new app
 var app = express();
 
-// view engine setup
+// View engine
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+// Get the environment variables and add to the templates
 var env = process.env.NODE_ENV || 'development';
 app.locals.ENV = env;
 app.locals.ENV_DEVELOPMENT = env == 'development';
 
-//是用domain.run捕获未处理的error
+// Use domain module to process errors
 app.use(function(req, res, next){
     var d = domain.create();
     d.on('error', function(err){
@@ -31,15 +36,20 @@ app.use(function(req, res, next){
     d.run(next);
 });
 
-app.use(favicon(__dirname + '/public/favicon.ico'));
+// app.use(favicon(__dirname + '/public/favicon.ico'));
+// Use morgan module to output log info
 app.use(morgan('dev'));
+// Use bodyParser to parse the info into json in request body
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: false
 }));
+// Use cookieParser to parse cookie
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+// Setting the static resource location
+app.use('/static', express.static(path.join(__dirname, 'public')));
 
+// Use routes
 app.use('/', routes);
 
 // catch 404 and forward to error handler

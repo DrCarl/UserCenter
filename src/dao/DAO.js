@@ -1,4 +1,6 @@
+// Load the module of mysql
 var mysql = require('mysql');
+// Create a connect pool of mysql
 var pool = mysql.createPool({
     host: "127.0.0.1",
     port: "3306",
@@ -6,6 +8,7 @@ var pool = mysql.createPool({
     password: "1227",
     database: "my-app"
 });
+// The body of DAO
 var DAO = function(table, dao) {
     this.table = table;
     this.dao = dao || "";
@@ -13,6 +16,7 @@ var DAO = function(table, dao) {
 
 DAO.prototype.pool = pool;
 
+// Get the data with id
 DAO.prototype.get = function(id, cb) {
     var _ = this;
     pool.getConnection(function(err, connection) {
@@ -21,6 +25,8 @@ DAO.prototype.get = function(id, cb) {
         console.log(_.dao + " : " + query.sql);
     });
 };
+
+// Get the list of data
 DAO.prototype.query = function(start, len, cb){
     var _ = this;
     var limit = "";
@@ -33,6 +39,8 @@ DAO.prototype.query = function(start, len, cb){
         console.log(_.dao + " : " + query.sql);
     });
 };
+
+// Get data by conditions
 DAO.prototype.select = function(dto, cb){
     var _ = this;
     var fields = [];
@@ -48,6 +56,8 @@ DAO.prototype.select = function(dto, cb){
     });
 
 };
+
+// Insert an item of data
 DAO.prototype.insert = function(dto, cb) {
     var _ = this;
     var fields = [];

@@ -1,3 +1,6 @@
+// Service that support the user module
+
+//  Load the user DAO
 var userDao = require("../dao/UserDAO");
 
 module.exports = {
