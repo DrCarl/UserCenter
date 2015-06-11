@@ -9,6 +9,8 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
+// Read the config.js
+var config = require('./config');
 
 // load router
 var router = require('./router');
@@ -17,13 +19,9 @@ var router = require('./router');
 var app = express();
 
 // Get the environment variables and add to the templates
-var env = process.env.NODE_ENV || 'development';
+var env = config.env;
 app.locals.ENV = env;
 app.locals.ENV_DEVELOPMENT = env == 'development';
-
-// Read the config.json
-var config=require('./config').env[env];
-console.log(config);
 
 // View engine
 app.set('views', path.join(__dirname, 'views'));
@@ -51,16 +49,13 @@ app.use(function(req, res, next){
  * session cookie body parser
  */
 // Use redis to instead of session
-var redis_store = new RedisStore({
-    host: "127.0.0.1",
-    port: 6379
-});
+var redis_store = new RedisStore(config.redis);
 app.use(session({
     store: redis_store,
     secret: '123456'
 }));
 app.use(function (req, res, next) {
-  if (!req.session) {
+  if(!req.session) {
     console.error('session is undefine'); // handle error
   }
   next();
@@ -91,8 +86,8 @@ app.use(function(req, res, next) {
 
 // development error handler
 // will print stacktrace
-if (app.get('env') === 'development') {
-    app.use(function(err, req, res, next) {
+if (env === 'development') {
+    app.use(function(err, req, res) {
         res.status(err.status || 500);
         res.render('error', {
             title: 'Error',
@@ -104,7 +99,7 @@ if (app.get('env') === 'development') {
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function(err, req, res, next) {
+app.use(function(err, req, res) {
     res.status(err.status || 500);
     res.render('error', {
         title: 'Error',

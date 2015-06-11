@@ -1,9 +1,7 @@
-var config = require("../../config");
-var env = process.env.NODE_ENV || 'development';
 // Load the module of mysql
 var mysql = require('mysql');
 // Create a connect pool of mysql
-var options = config.env[env].mysql;
+var options = require('../../config').mysql;
 var pool = mysql.createPool(options);
 // The body of DAO
 var DAO = function(table, dao) {

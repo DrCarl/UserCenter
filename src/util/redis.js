@@ -1,5 +1,6 @@
 var redis = require('redis');
-var client = redis.createClient();
+var config = require('../../config');
+var client = redis.createClient(config.redis);
 var namespace = 'uc';
 
 client.on('connect', function () {
